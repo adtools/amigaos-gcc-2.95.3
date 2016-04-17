@@ -255,7 +255,6 @@ struct default_include { const char *fname;
     { CROSS_INCLUDE_DIR, 0, 0, 0 },
     /* This is another place that the target system's headers might be.  */
     { TOOL_INCLUDE_DIR, "BINUTILS", 0, 0 },
-    { LOCAL_INCLUDE_DIR, 0, 0, 1 },
 #else /* not CROSS_COMPILE */
     /* This should be /use/local/include and should come before
        the fixincludes-fixed header files.  */

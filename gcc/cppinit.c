@@ -140,7 +140,6 @@ include_defaults_array[]
     /* This is another place that the target system's headers might be.  */
     { TOOL_INCLUDE_DIR, "BINUTILS", 0, 1 },
 #endif
-    { LOCAL_INCLUDE_DIR, 0, 0, 1 },
 #else /* not CROSS_COMPILE */
 #ifdef LOCAL_INCLUDE_DIR
     /* This should be /usr/local/include and should come before
