@@ -25,7 +25,10 @@
 
 #include <libioP.h>
 
-_IO_pos_t
+// Changed 2001-04-05 Andreas Wolff <andreas.wolff@dusnet.de>
+// Avoid conflicting types with libioP.h 
+// This may be obsolete for future versions of libio
+_IO_off_t
 _IO_seekoff (fp, offset, dir, mode)
      _IO_FILE *fp;
      _IO_off_t offset;

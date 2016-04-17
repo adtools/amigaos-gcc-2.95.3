@@ -467,10 +467,13 @@ _IO_default_setbuf (fp, p, len)
     return fp;
 }
 
-_IO_pos_t
+// Changed 2001-04-05 Andreas Wolff <andreas.wolff@dusnet.de>
+// Avoid conflicting types with libioP.h 
+// This may be obsolete for future versions of libio
+_IO_off_t
 _IO_default_seekpos (fp, pos, mode)
      _IO_FILE *fp;
-     _IO_pos_t pos;
+     _IO_off_t pos;
      int mode;
 {
   return _IO_SEEKOFF (fp, _IO_pos_as_off (pos), 0, mode);
@@ -551,7 +554,10 @@ _IO_default_finish (fp, dummy)
   _IO_un_link (fp);
 }
 
-_IO_pos_t
+// Changed 2001-04-05 Andreas Wolff <andreas.wolff@dusnet.de>
+// Avoid conflicting types with libioP.h 
+// This may be obsolete for future versions of libio
+_IO_off_t
 _IO_default_seekoff (fp, offset, dir, mode)
      _IO_FILE *fp;
      _IO_off_t offset;
@@ -882,7 +888,10 @@ _IO_default_pbackfail (fp, c)
   return (unsigned char) *fp->_IO_read_ptr;
 }
 
-_IO_pos_t
+// Changed 2001-04-05 Andreas Wolff <andreas.wolff@dusnet.de>
+// Avoid conflicting types with libioP.h 
+// This may be obsolete for future versions of libio
+_IO_off_t
 _IO_default_seek (fp, offset, dir)
      _IO_FILE *fp;
      _IO_off_t offset;

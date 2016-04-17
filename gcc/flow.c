@@ -3157,11 +3157,13 @@ regno_uninitialized (regno)
   if (n_basic_blocks == 0
       || (regno < FIRST_PSEUDO_REGISTER
 	  && (global_regs[regno]
-	      || fixed_regs[regno]
-	      || FUNCTION_ARG_REGNO_P (regno))))
+/* begin-GG-local: explicit register specification for parameters */
+	      || fixed_regs[regno])))
     return 0;
 
-  return REGNO_REG_SET_P (BASIC_BLOCK (0)->global_live_at_start, regno);
+  return (REGNO_REG_SET_P (BASIC_BLOCK (0)->global_live_at_start, regno)
+	  && (regno >= FIRST_PSEUDO_REGISTER || ! function_arg_regno_p (regno)));
+/* end-GG-local */
 }
 
 /* 1 if register REGNO was alive at a place where `setjmp' was called

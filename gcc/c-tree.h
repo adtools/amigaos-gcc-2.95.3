@@ -331,7 +331,8 @@ extern void print_lang_identifier               PROTO((FILE *, tree, int));
 extern void print_lang_type                     PROTO((FILE *, tree, int));
 extern void push_c_function_context             PROTO((void));
 extern void push_label_level                    PROTO((void));
-extern void push_parm_decl                      PROTO((tree));
+/* Amiga: explicit register specification for parameters */
+extern void push_parm_decl                      PROTO((tree, tree));
 extern tree pushdecl                            PROTO((tree));
 extern tree pushdecl_top_level                  PROTO((tree));
 extern void pushlevel                           PROTO((int));

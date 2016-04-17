@@ -134,10 +134,11 @@ AC_ARG_WITH(elf,
 elf="$with_elf",
 elf=no)
 
+### begin-GG-local: local prefix
 # Specify the local prefix
 local_prefix=
 AC_ARG_WITH(local-prefix,
-[  --with-local-prefix=DIR specifies directory to put local include.],
+[  --with-local-prefix=DIR specifies directory to put local include directory (not files).],
 [case "${withval}" in
 yes)	AC_MSG_ERROR(bad value ${withval} given for local include directory prefix) ;;
 no)	;;
@@ -146,8 +147,9 @@ esac])
 
 # Default local prefix if it is empty
 if test x$local_prefix = x; then
-	local_prefix=/usr/local
+	local_prefix='${prefix}'/local
 fi
+### end-GG-local
 
 # Don't set gcc_gxx_include_dir to gxx_include_dir since that's only
 # passed in by the toplevel make and thus we'd get different behavior
@@ -2012,6 +2014,13 @@ changequote([,])dnl
 		extra_headers=math-68881.h
 		thread_file='vxworks'
 		float_format=m68k
+		;;
+	m68k-*-amigaos*)
+		tm_file=m68k/amigaos.h
+		tmake_file=m68k/t-amigaos
+		xmake_file=m68k/x-amigaos
+		extra_objs=amigaos.o
+		gnu_ld=yes
 		;;
 	m68k-*-aout*)
 		tmake_file=m68k/t-m68kbare
