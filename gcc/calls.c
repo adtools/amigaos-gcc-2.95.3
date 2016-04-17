@@ -2613,6 +2613,10 @@ emit_library_call VPROTO((rtx orgfun, int no_queue, enum machine_mode outmode,
 
   fun = orgfun;
 
+#ifdef LIBCALL_ENCODE_SECTION_INFO
+  LIBCALL_ENCODE_SECTION_INFO (fun);
+#endif
+
   /* Copy all the libcall-arguments out of the varargs data
      and into a vector ARGVEC.
 
@@ -3112,6 +3116,10 @@ emit_library_call_value VPROTO((rtx orgfun, rtx value, int no_queue,
 
   is_const = no_queue;
   fun = orgfun;
+
+#ifdef LIBCALL_ENCODE_SECTION_INFO
+  LIBCALL_ENCODE_SECTION_INFO (fun);
+#endif
 
   /* If this kind of value comes back in memory,
      decide where in memory it should come back.  */

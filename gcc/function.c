@@ -165,6 +165,8 @@ int current_function_has_computed_jump;
    we should try to cut corners where we can.  */
 int current_function_is_thunk;
 
+int current_function_is_interrupt;
+
 /* Nonzero if function being compiled can call alloca,
    either as a subroutine or builtin.  */
 
@@ -572,6 +574,7 @@ push_function_context_to (context)
   p->contains_functions = current_function_contains_functions;
   p->has_computed_jump = current_function_has_computed_jump;
   p->is_thunk = current_function_is_thunk;
+  p->is_interrupt = current_function_is_interrupt;
   p->args_size = current_function_args_size;
   p->pretend_args_size = current_function_pretend_args_size;
   p->arg_offset_rtx = current_function_arg_offset_rtx;
@@ -658,6 +661,7 @@ pop_function_context_from (context)
   current_function_has_nonlocal_label = p->has_nonlocal_label;
   current_function_has_nonlocal_goto = p->has_nonlocal_goto;
   current_function_is_thunk = p->is_thunk;
+  current_function_is_interrupt = p->is_interrupt;
   current_function_args_size = p->args_size;
   current_function_pretend_args_size = p->pretend_args_size;
   current_function_arg_offset_rtx = p->arg_offset_rtx;
@@ -5130,6 +5134,9 @@ assign_parms (fndecl, second_time)
   current_function_pops_args = RETURN_POPS_ARGS (fndecl, TREE_TYPE (fndecl),
 						 current_function_args_size);
 
+  current_function_is_interrupt = lookup_attribute ("interrupt_handler",
+                                                    TYPE_ATTRIBUTES (TREE_TYPE (fndecl)));
+
   /* For stdarg.h function, save info about
      regs and stack space used by the named args.  */
 
@@ -5958,6 +5965,7 @@ init_function_start (subr, filename, line)
   current_function_uses_only_leaf_regs = 0;
   current_function_has_computed_jump = 0;
   current_function_is_thunk = 0;
+  current_function_is_interrupt = 0;
 
   current_function_returns_pcc_struct = 0;
   current_function_returns_struct = 0;
@@ -7027,3 +7035,29 @@ reposition_prologue_and_epilogue_notes (f)
     }
 #endif /* HAVE_prologue or HAVE_epilogue */
 }
+
+/* begin-GG-local: explicit register specification for parameters */
+/* Return 1 if an argument for the current function was passed in
+   register REGNO.  */
+
+int
+function_arg_regno_p (regno)
+     int regno;
+{
+  tree parm = DECL_ARGUMENTS (current_function_decl);
+  for (; parm; parm = TREE_CHAIN (parm))
+    {
+      rtx incoming = DECL_INCOMING_RTL (parm);
+      if (GET_CODE (incoming) == REG)
+	{
+	  int incoming_reg;
+	  incoming_reg = REGNO (incoming);
+	  if (regno >= incoming_reg &&
+	      regno < incoming_reg + HARD_REGNO_NREGS (incoming_reg,
+						       GET_MODE (incoming)))
+	    return 1;
+	}
+    }
+  return 0;
+}
+/* end-GG-local */

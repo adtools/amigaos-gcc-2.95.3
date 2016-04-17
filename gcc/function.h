@@ -82,6 +82,7 @@ struct function
   int contains_functions;
   int has_computed_jump;
   int is_thunk;
+  int is_interrupt;
   rtx nonlocal_goto_handler_slots;
   rtx nonlocal_goto_handler_labels;
   rtx nonlocal_goto_stack_level;

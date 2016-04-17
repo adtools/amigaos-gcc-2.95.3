@@ -347,6 +347,8 @@ extern rtx final_sequence;
 
 extern int current_function_pops_args;
 
+extern int current_function_is_interrupt;
+
 /* Nonzero if function being compiled needs to be given an address
    where the value should be stored.  */
 
