@@ -39,91 +39,97 @@ Boston, MA 02111-1307, USA.  */
    When creating shared libraries, use different 'errno'.  */
 
 /* -msoft-float is the default, assume -mc68000 as well */
-#define CPP_SPEC							\
-  "%{m68881:-D__HAVE_68881__} "						\
-  "%{!ansi:"								\
-    "%{m68020:-Dmc68020} "						\
-    "%{mc68020:-Dmc68020} "						\
-    "%{m68020-40:-Dmc68020} "						\
-    "%{m68020-60:-Dmc68020} "						\
-    "%{m68030:-Dmc68030} "						\
-    "%{m68040:-Dmc68040} "						\
-    "%{m68060:-Dmc68060} "						\
-    "%{!noixemul:-Dixemul} "						\
-    "%{noixemul:-Dlibnix}} "						\
-  "%{m68020:-D__mc68020__ -D__mc68020} "				\
-  "%{mc68020:-D__mc68020__ -D__mc68020} "				\
-  "%{m68020-40:-D__mc68020__ -D__mc68020} "				\
-  "%{m68020-60:-D__mc68020__ -D__mc68020} "				\
-  "%{m68030:-D__mc68030__ -D__mc68030} "				\
-  "%{m68040:-D__mc68040__ -D__mc68040} "				\
-  "%{m68060:-D__mc68060__ -D__mc68060} "				\
-  "%{!noixemul:-D__ixemul__ -D__ixemul} "				\
-  "%{noixemul:-D__libnix__ -D__libnix} "				\
-  "%{malways-restore-a4:-Derrno=(*ixemul_errno)} "			\
-  "%{mrestore-a4:-Derrno=(*ixemul_errno)} "
+#define CPP_SPEC                                    \
+  "%{m68881:-D__HAVE_68881__} "                     \
+  "%{!ansi:"                                        \
+    "%{m68020:-Dmc68020} "                          \
+    "%{mc68020:-Dmc68020} "                         \
+    "%{m68020-40:-Dmc68020} "                       \
+    "%{m68020-60:-Dmc68020} "                       \
+    "%{m68030:-Dmc68030} "                          \
+    "%{m68040:-Dmc68040} "                          \
+    "%{m68060:-Dmc68060} "                          \
+    "%{!noixemul:-Dixemul} "                        \
+    "%{noixemul:-Dlibnix}} "                        \
+  "%{m68020:-D__mc68020__ -D__mc68020} "            \
+  "%{mc68020:-D__mc68020__ -D__mc68020} "           \
+  "%{m68020-40:-D__mc68020__ -D__mc68020} "         \
+  "%{m68020-60:-D__mc68020__ -D__mc68020} "         \
+  "%{m68030:-D__mc68030__ -D__mc68030} "            \
+  "%{m68040:-D__mc68040__ -D__mc68040} "            \
+  "%{m68060:-D__mc68060__ -D__mc68060} "            \
+  "%{!noixemul:-D__ixemul__ -D__ixemul} "           \
+  "%{noixemul:-D__libnix__ -D__libnix} "            \
+  "%{malways-restore-a4:-Derrno=(*ixemul_errno)} "  \
+  "%{mrestore-a4:-Derrno=(*ixemul_errno)} "         \
 
 /* Various -m flags require special flags to the assembler.  */
 
-#define ASM_SPEC "\
- %{m68000:-mc68010}\
- %{mc68000:-mc68010}\
- %{m68020:-mc68020}\
- %{mc68020:-mc68020}\
- %{m68030:-mc68030}\
- %{m68040:-mc68040}\
- %{m68060:-mc68060}\
- %{m68020-40:-mc68020}\
- %{m68020-60:-mc68020}\
- %{!mc68000:%{!m68000:%{!mc68020:%{!m68020:%{!m68030:%{!m68040:%{!m68060:%{!m68020-40:%{!m68020-60:-mc68010}}}}}}}}}\
- %{msmall-code:-sc}\
-"
+#define ASM_SPEC                                    \
+  "%{m68000:-mc68010} "                             \
+  "%{mc68000:-mc68010} "                            \
+  "%{m68020:-mc68020} "                             \
+  "%{mc68020:-mc68020} "                            \
+  "%{m68030:-mc68030} "                             \
+  "%{m68040:-mc68040} "                             \
+  "%{m68060:-mc68060} "                             \
+  "%{m68020-40:-mc68020} "                          \
+  "%{m68020-60:-mc68020} "                          \
+  "%{!mc68000:"                                     \
+    "%{!m68000:"                                    \
+      "%{!mc68020:"                                 \
+        "%{!m68020:"                                \
+          "%{!m68030:"                              \
+            "%{!m68040:"                            \
+              "%{!m68060:"                          \
+                "%{!m68020-40:"                     \
+                  "%{!m68020-60:-mc68010}}}}}}}}}"  \
+  "%{msmall-code:-sc} "                             \
 
 /* amiga/amigaos are the new "standard" defines for the Amiga.
  * MCH_AMIGA, AMIGA, __chip etc. are used in other compilers and are
  * provided for compatibility reasons.  */
 
-#define CPP_PREDEFINES "\
- -Dmc68000\
- -Damiga\
- -Damigaos\
- -DMCH_AMIGA\
- -DAMIGA\
- -D__chip=__attribute__((__chip__))\
- -D__saveds=__attribute__((__saveds__))\
- -D__interrupt=__attribute__((__interrupt__))\
- -D__interrupt_handler=__attribute__((__interrupt_handler__))\
- -D__stackext=__attribute__((__stackext__))\
- -D__regargs=__attribute__((__regparm__))\
- -D__stdargs=__attribute__((__stkparm__))\
- -D__aligned=__attribute__((__aligned__(4)))\
- -Asystem(amigaos)\
- -Acpu(m68k)\
- -Amachine(m68k)\
-"
+#define CPP_PREDEFINES                                            \
+  "-Dmc68000 "                                                    \
+  "-Damiga "                                                      \
+  "-Damigaos "                                                    \
+  "-DMCH_AMIGA "                                                  \
+  "-DAMIGA "                                                      \
+  "-D__chip=__attribute__((__chip__)) "                           \
+  "-D__saveds=__attribute__((__saveds__)) "                       \
+  "-D__interrupt=__attribute__((__interrupt__)) "                 \
+  "-D__interrupt_handler=__attribute__((__interrupt_handler__)) " \
+  "-D__stackext=__attribute__((__stackext__)) "                   \
+  "-D__regargs=__attribute__((__regparm__)) "                     \
+  "-D__stdargs=__attribute__((__stkparm__)) "                     \
+  "-D__aligned=__attribute__((__aligned__(4))) "                  \
+  "-Asystem(amigaos) "                                            \
+  "-Acpu(m68k) "                                                  \
+  "-Amachine(m68k) "                                              \
 
 /* Choose the right startup file, depending on whether we use base relative
    code, base relative code with automatic relocation (-resident), their
    32-bit versions, libnix, profiling or plain crt0.o.  */
 
-#define STARTFILE_SPEC							\
-  "%{!noixemul:"							\
-    "%{fbaserel:%{!resident:bcrt0.o%s}}"				\
-    "%{resident:rcrt0.o%s}"						\
-    "%{fbaserel32:%{!resident32:lcrt0.o%s}}"				\
-    "%{resident32:scrt0.o%s}"						\
-    "%{!resident:%{!fbaserel:%{!resident32:%{!fbaserel32:"		\
-      "%{pg:gcrt0.o%s}%{!pg:%{p:mcrt0.o%s}%{!p:crt0.o%s}}}}}}}"		\
-  "%{noixemul:"								\
-    "%{ramiga-*:"							\
-      "%{ramiga-lib:libnix/libinit.o%s}"				\
-      "%{ramiga-libr:libnix/libinitr.o%s}"				\
-      "%{ramiga-dev:libnix/devinit.o%s}}"				\
-    "%{!ramiga-*:"							\
-      "%{resident:libnix/nrcrt0.o%s}"					\
-      "%{!resident:"							\
-        "%{fbaserel:libnix/nbcrt0.o%s}"					\
-        "%{!fbaserel:libnix/ncrt0.o%s}}}}"				\
+#define STARTFILE_SPEC                                            \
+  "%{!noixemul:"                                                  \
+    "%{fbaserel:%{!resident:bcrt0.o%s}}"                          \
+    "%{resident:rcrt0.o%s}"                                       \
+    "%{fbaserel32:%{!resident32:lcrt0.o%s}}"                      \
+    "%{resident32:scrt0.o%s}"                                     \
+    "%{!resident:%{!fbaserel:%{!resident32:%{!fbaserel32:"        \
+      "%{pg:gcrt0.o%s}%{!pg:%{p:mcrt0.o%s}%{!p:crt0.o%s}}}}}}}"   \
+  "%{noixemul:"                                                   \
+    "%{ramiga-*:"                                                 \
+      "%{ramiga-lib:libnix/libinit.o%s}"                          \
+      "%{ramiga-libr:libnix/libinitr.o%s}"                        \
+      "%{ramiga-dev:libnix/devinit.o%s}}"                         \
+    "%{!ramiga-*:"                                                \
+      "%{resident:libnix/nrcrt0.o%s}"                             \
+      "%{!resident:"                                              \
+        "%{fbaserel:libnix/nbcrt0.o%s}"                           \
+        "%{!fbaserel:libnix/ncrt0.o%s}}}}"                        \
 
 #define ENDFILE_SPEC "%{noixemul:-lstubs}"
 
@@ -140,13 +146,13 @@ Boston, MA 02111-1307, USA.  */
    to put in a -lamiga himself and get it in the wrong place, so that (for
    example) calls like sprintf come from -lamiga rather than -lc. */
 
-#define LIB_SPEC							\
-  "%{!noixemul:"							\
-    "%{!p:%{!pg:-lc -lamiga -lc}}"					\
-    "%{p:-lc_p}%{pg:-lc_p}}"						\
-  "%{noixemul:-lnixmain -lnix -lamiga "					\
-    "%{mstackcheck:-lstack} "						\
-    "%{mstackextend:-lstack}}"
+#define LIB_SPEC                          \
+  "%{!noixemul:"                          \
+    "%{!p:%{!pg:-lc -lamiga -lc}}"        \
+    "%{p:-lc_p}%{pg:-lc_p}}"              \
+  "%{noixemul:-lnixmain -lnix -lamiga "   \
+    "%{mstackcheck:-lstack} "             \
+    "%{mstackextend:-lstack}} "           \
 
 #define LIBGCC_SPEC \
   "-lgcc %{noixemul:-lnix}"
@@ -156,28 +162,28 @@ Boston, MA 02111-1307, USA.  */
    Also, pass appropriate linker flavours depending on user-supplied
    commandline options.  */
 
-#define LINK_SPEC							\
-  "%{noixemul:-fl libnix} "						\
-  "%{fbaserel:%{!resident:-m amiga_bss -fl libb}} "			\
-  "%{resident:-m amiga_bss -amiga-datadata-reloc -fl libb} "		\
-  "%{fbaserel32:%{!resident32:-m amiga_bss -fl libb32}} "		\
-  "%{resident32:-m amiga_bss -amiga-datadata-reloc -fl libb32} "	\
-  "%{g:-amiga-debug-hunk} "						\
-  "%{m68020:-fl libm020} "						\
-  "%{mc68020:-fl libm020} "						\
-  "%{m68030:-fl libm020} "						\
-  "%{m68040:-fl libm020} "						\
-  "%{m68060:-fl libm020} "						\
-  "%{m68020-40:-fl libm020} "						\
-  "%{m68020-60:-fl libm020} "						\
-  "%{m68881:-fl libm881} "
+#define LINK_SPEC                                                 \
+  "%{noixemul:-fl libnix} "                                       \
+  "%{fbaserel:%{!resident:-m amiga_bss -fl libb}} "               \
+  "%{resident:-m amiga_bss -amiga-datadata-reloc -fl libb} "      \
+  "%{fbaserel32:%{!resident32:-m amiga_bss -fl libb32}} "         \
+  "%{resident32:-m amiga_bss -amiga-datadata-reloc -fl libb32} "  \
+  "%{g:-amiga-debug-hunk} "                                       \
+  "%{m68020:-fl libm020} "                                        \
+  "%{mc68020:-fl libm020} "                                       \
+  "%{m68030:-fl libm020} "                                        \
+  "%{m68040:-fl libm020} "                                        \
+  "%{m68060:-fl libm020} "                                        \
+  "%{m68020-40:-fl libm020} "                                     \
+  "%{m68020-60:-fl libm020} "                                     \
+  "%{m68881:-fl libm881} "                                        \
 
 /* Translate '-resident' to '-fbaserel' (they differ in linking stage only).
    Don't put function addresses in registers for PC-relative code.  */
 
-#define CC1_SPEC							\
-  "%{resident:-fbaserel} "						\
-  "%{resident32:-fbaserel32} "						\
+#define CC1_SPEC                          \
+  "%{resident:-fbaserel} "                \
+  "%{resident32:-fbaserel32} "            \
   "%{msmall-code:-fno-function-cse} "
 
 /* A modified copy of LINK_COMMAND_SPEC from gcc/gcc.c file.  If -noixemul
@@ -185,16 +191,21 @@ Boston, MA 02111-1307, USA.  */
  * the options is at the end of command line.  Otherwise linker chooses main()
  * function from libgcc.a instead from libnix.a. */
 
-#define LINK_COMMAND_SPEC                                                           \
-  "%{!fsyntax-only: "                                                               \
-  "%{!c:%{!M:%{!MM:%{!E:%{!S:%(linker) %l %X %{o*} %{A} %{d} %{e*} %{m} %{N} %{n} " \
-  "%{r} %{s} %{t} %{u*} %{x} %{z} %{Z} "                                            \
-  "%{!A:%{!nostdlib:%{!nostartfiles:%S}}} "                                         \
-  "%{static:} %{L*} %D %o "                                                         \
-  "%{!nostdlib:%{!nodefaultlibs:%{!noixemul:%G} %L}} "                              \
-  "%{!A:%{!nostdlib:%{!nostartfiles:%E}}} "                                         \
-  "%{!nostdlib:%{!nodefaultlibs:%G}} "                                              \
-  "%{T*} }}}}}} "
+#define LINK_COMMAND_SPEC                                           \
+  "%{!fsyntax-only:"                                                \
+    "%{!c:"                                                         \
+      "%{!M:"                                                       \
+        "%{!MM:"                                                    \
+          "%{!E:"                                                   \
+            "%{!S:"                                                 \
+              "%(linker) %l %X %{o*} %{A} %{d} %{e*} %{m} "         \
+              "%{N} %{n} %{r} %{s} %{t} %{u*} %{x} %{z} %{Z} "      \
+              "%{!A:%{!nostdlib:%{!nostartfiles:%S}}} "             \
+              "%{static:} %{L*} %D %o "                             \
+              "%{!nostdlib:%{!nodefaultlibs:%{!noixemul:%G} %L}} "  \
+              "%{!A:%{!nostdlib:%{!nostartfiles:%E}}} "             \
+              "%{!nostdlib:%{!nodefaultlibs:%G}} "                  \
+              "%{T*} }}}}}} "                                       \
 
 /* Compile with stack extension.  */
 
