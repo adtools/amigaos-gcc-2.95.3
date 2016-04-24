@@ -93,7 +93,7 @@ Boston, MA 02111-1307, USA.  */
             "%{!m68040:"                            \
               "%{!m68060:"                          \
                 "%{!m68020-40:"                     \
-                  "%{!m68020-60:-mc68010}}}}}}}}}"  \
+                  "%{!m68020-60:-mc68010}}}}}}}}} " \
   "%{msmall-code:-sc} "                             \
 
 /* amiga/amigaos are the new "standard" defines for the Amiga.
