@@ -22,6 +22,16 @@ Boston, MA 02111-1307, USA.  */
 
 #include "m68k/m68k.h"
 
+#undef INCLUDE_DEFAULTS
+#define INCLUDE_DEFAULTS                                    \
+  {                                                         \
+    { GPLUSPLUS_INCLUDE_DIR, "G++", 1, 1 },                 \
+    { GCC_INCLUDE_DIR, "GCC", 0, 0 },                       \
+    { TOOL_INCLUDE_DIR, "GCC", 0, 0 },                      \
+    { TOOL_INCLUDE_DIR "/../../os-include", "GCC", 0, 0 },  \
+    { 0, 0, 0, 0 }                                          \
+  }
+
 /* begin-GG-local: explicit register specification for parameters */
 #define TARGET_AMIGAOS
 /* end-GG-local */

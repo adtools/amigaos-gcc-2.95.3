@@ -1,12 +1,5 @@
 # Makefile fragment for AmigaOS target.
 
-# Each compilation environment (Manx, Dice, GCC, SAS/C, etc) provides its
-# own equivalent of the UNIX /usr/include tree.  For gcc, the standard headers
-# are in /gg/include and system specific headers are in /gg/os-include.
-# Use these paths for fixincludes.
-
-SYSTEM_HEADER_DIR = /gg/include
-
 # Extra object file linked to the cc1* executables.
 amigaos.o: $(srcdir)/config/m68k/amigaos.c $(CONFIG_H)
 	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) $<
