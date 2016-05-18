@@ -418,4 +418,6 @@ comp_amigaos_type_attributes(tree type1, tree type2)
   return 1;
 }
 
+char *amigaos_crt_string;
+
 /* end-GG-local */

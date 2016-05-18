@@ -27,8 +27,8 @@ Boston, MA 02111-1307, USA.  */
   {                                                         \
     { GPLUSPLUS_INCLUDE_DIR, "G++", 1, 1 },                 \
     { GCC_INCLUDE_DIR, "GCC", 0, 0 },                       \
-    { TOOL_INCLUDE_DIR, "GCC", 0, 0 },                      \
-    { TOOL_INCLUDE_DIR "/../../os-include", "GCC", 0, 0 },  \
+    { LOCAL_INCLUDE_DIR "/../os-include", "GCC", 0, 0 },    \
+    { CROSS_INCLUDE_DIR, "GCC", 0, 0, 0 },                  \
     { 0, 0, 0, 0 }                                          \
   }
 
@@ -43,12 +43,22 @@ Boston, MA 02111-1307, USA.  */
 
 #define TARGET_DEFAULT 0
 
+/* When creating shared libraries, use different 'errno'. */
+#define CPP_IXEMUL_SPEC                             \
+  "%{!ansi:-Dixemul} -D__ixemul__ -D__ixemul "      \
+  "%{malways-restore-a4:-Derrno=(*ixemul_errno)} "  \
+  "%{mrestore-a4:-Derrno=(*ixemul_errno)}"
+#define CPP_LIBNIX_SPEC                             \
+  "-isystem %(sdk_root)libnix/include "             \
+  "%{!ansi:-Dlibnix} -D__libnix__ -D__libnix"
+#define CPP_CLIB2_SPEC                              \
+  "-isystem %(sdk_root)clib2/include "              \
+  "%{!ansi:-DCLIB2} -D__CLIB2__ -D__CLIB2"
+
 /* Define __HAVE_68881__ in preprocessor according to the -m flags.
    This will control the use of inline 68881 insns in certain macros.
    Also inform the program which CPU we compile for.
-   When creating shared libraries, use different 'errno'.  */
-
-/* -msoft-float is the default, assume -mc68000 as well */
+   -msoft-float is the default, assume -mc68000 as well */
 #define CPP_SPEC                                    \
   "%{m68881:-D__HAVE_68881__} "                     \
   "%{!ansi:"                                        \
@@ -58,9 +68,7 @@ Boston, MA 02111-1307, USA.  */
     "%{m68020-60:-Dmc68020} "                       \
     "%{m68030:-Dmc68030} "                          \
     "%{m68040:-Dmc68040} "                          \
-    "%{m68060:-Dmc68060} "                          \
-    "%{!noixemul:-Dixemul} "                        \
-    "%{noixemul:-Dlibnix}} "                        \
+    "%{m68060:-Dmc68060}} "                         \
   "%{m68020:-D__mc68020__ -D__mc68020} "            \
   "%{mc68020:-D__mc68020__ -D__mc68020} "           \
   "%{m68020-40:-D__mc68020__ -D__mc68020} "         \
@@ -68,10 +76,9 @@ Boston, MA 02111-1307, USA.  */
   "%{m68030:-D__mc68030__ -D__mc68030} "            \
   "%{m68040:-D__mc68040__ -D__mc68040} "            \
   "%{m68060:-D__mc68060__ -D__mc68060} "            \
-  "%{!noixemul:-D__ixemul__ -D__ixemul} "           \
-  "%{noixemul:-D__libnix__ -D__libnix} "            \
-  "%{malways-restore-a4:-Derrno=(*ixemul_errno)} "  \
-  "%{mrestore-a4:-Derrno=(*ixemul_errno)} "         \
+  "%{noixemul:%(cpp_libnix)} "                      \
+  "%{mcrt=ixemul:%(cpp_ixemul)} "                   \
+  "%{mcrt=clib2:%(cpp_clib2)}"
 
 /* Various -m flags require special flags to the assembler.  */
 
@@ -122,26 +129,46 @@ Boston, MA 02111-1307, USA.  */
    code, base relative code with automatic relocation (-resident), their
    32-bit versions, libnix, profiling or plain crt0.o.  */
 
-#define STARTFILE_SPEC                                            \
-  "%{!noixemul:"                                                  \
-    "%{fbaserel:%{!resident:bcrt0.o%s}}"                          \
-    "%{resident:rcrt0.o%s}"                                       \
-    "%{fbaserel32:%{!resident32:lcrt0.o%s}}"                      \
-    "%{resident32:scrt0.o%s}"                                     \
-    "%{!resident:%{!fbaserel:%{!resident32:%{!fbaserel32:"        \
-      "%{pg:gcrt0.o%s}%{!pg:%{p:mcrt0.o%s}%{!p:crt0.o%s}}}}}}}"   \
-  "%{noixemul:"                                                   \
-    "%{ramiga-*:"                                                 \
-      "%{ramiga-lib:libnix/libinit.o%s}"                          \
-      "%{ramiga-libr:libnix/libinitr.o%s}"                        \
-      "%{ramiga-dev:libnix/devinit.o%s}}"                         \
-    "%{!ramiga-*:"                                                \
-      "%{resident:libnix/nrcrt0.o%s}"                             \
+#define STARTFILE_IXEMUL_SPEC                                     \
+  "%{fbaserel:%{!resident:bcrt0.o%s}}"                            \
+  "%{resident:rcrt0.o%s}"                                         \
+  "%{fbaserel32:%{!resident32:lcrt0.o%s}}"                        \
+  "%{resident32:scrt0.o%s}"                                       \
+  "%{!resident:%{!fbaserel:%{!resident32:%{!fbaserel32:"          \
+    "%{pg:gcrt0.o%s}%{!pg:%{p:mcrt0.o%s}%{!p:crt0.o%s}}}}}}"
+#define STARTFILE_LIBNIX_SPEC                                     \
+  "%(sdk_root)libnix/lib/libnix/"                                 \
+  "%{ramiga-*:"                                                   \
+    "%{ramiga-lib:libinit.o%s}"                                   \
+    "%{ramiga-libr:libinitr.o%s}"                                 \
+    "%{ramiga-dev:devinit.o%s}}"                                  \
+  "%{!ramiga-*:"                                                  \
+    "%{resident:nrcrt0.o%s}"                                      \
+    "%{!resident:"                                                \
+      "%{fbaserel:nbcrt0.o%s}"                                    \
+      "%{!fbaserel:ncrt0.o%s}}}"
+#define STARTFILE_CLIB2_SPEC                                      \
+  "%(sdk_root)clib2/lib/"                                         \
+  "%{resident32:nr32crt0.o%s}"                                    \
+  "%{!resident32:"                                                \
+    "%{fbaserel32:nb32crt0.o%s}"                                  \
+    "%{!fbaserel32:"                                              \
+      "%{resident:nrcrt0.o%s}"                                    \
       "%{!resident:"                                              \
-        "%{fbaserel:libnix/nbcrt0.o%s}"                           \
-        "%{!fbaserel:libnix/ncrt0.o%s}}}}"                        \
+        "%{fbaserel:nbcrt0.o%s}"                                  \
+        "%{!fbaserel:ncrt0.o%s}}}}"
+#define STARTFILE_SPEC                                            \
+  "%{noixemul:%(startfile_libnix)} "                              \
+  "%{mcrt=ixemul:%(startfile_ixemul)} "                           \
+  "%{mcrt=clib2:%(startfile_clib2)}"
 
-#define ENDFILE_SPEC "%{noixemul:-lstubs}"
+#define ENDFILE_IXEMUL_SPEC ""
+#define ENDFILE_LIBNIX_SPEC "-lstubs"
+#define ENDFILE_CLIB2_SPEC ""
+#define ENDFILE_SPEC                                              \
+  "%{noixemul:%(endfile_libnix)} "                                \
+  "%{mcrt=ixemul:%(endfile_ixemul)} "                             \
+  "%{mcrt=clib2:%(endfile_clib2)}"
 
 /* Automatically search libamiga.a for AmigaOS specific functions.  Note
    that we first search the standard C library to resolve as much as
@@ -156,24 +183,43 @@ Boston, MA 02111-1307, USA.  */
    to put in a -lamiga himself and get it in the wrong place, so that (for
    example) calls like sprintf come from -lamiga rather than -lc. */
 
-#define LIB_SPEC                          \
-  "%{!noixemul:"                          \
-    "%{!p:%{!pg:-lc -lamiga -lc}}"        \
-    "%{p:-lc_p}%{pg:-lc_p}}"              \
-  "%{noixemul:-lnixmain -lnix -lamiga "   \
-    "%{mstackcheck:-lstack} "             \
-    "%{mstackextend:-lstack}} "           \
+#define LIB_IXEMUL_SPEC                                           \
+  "%{!p:%{!pg:-lc -lamiga -lc}} "                                 \
+  "%{p:-lc_p} %{pg:-lc_p}"
+#define LIB_LIBNIX_SPEC                                           \
+  "-lnixmain -lnix -lamiga "                                      \
+  "%{mstackcheck:-lstack} "                                       \
+  "%{mstackextend:-lstack}"
+#define LIB_CLIB2_SPEC                                            \
+  "-lc -lamiga -ldebug "                                          \
+  "%{mstackcheck:-lstack} "                                       \
+  "%{mstackextend:-lstack}"
+#define LIB_SPEC                                                  \
+  "%{noixemul:%(lib_libnix)} "                                    \
+  "%{mcrt=ixemul:%(lib_ixemul)} "                                 \
+  "%{mcrt=clib2:%(lib_clib2)}"
 
-#define LIBGCC_SPEC \
-  "-lgcc %{noixemul:-lnix}"
+#define LIBGCC_IXEMUL_SPEC ""
+#define LIBGCC_LIBNIX_SPEC "-lnix"
+#define LIBGCC_CLIB2_SPEC "-lc"
+#define LIBGCC_SPEC "-lgcc "                                      \
+  "%{noixemul:%(libgcc_libnix)} "                                 \
+  "%{mcrt=ixemul:%(libgcc_ixemul)} "                              \
+  "%{mcrt=clib2:%(libgcc_clib2)}"
 
 /* If debugging, tell the linker to output amiga-hunk symbols *and* a BSD
    compatible debug hunk.
    Also, pass appropriate linker flavours depending on user-supplied
    commandline options.  */
 
+#define LINK_IXEMUL_SPEC ""
+#define LINK_LIBNIX_SPEC "-L%(sdk_root)libnix/lib -fl libnix"
+#define LINK_CLIB2_SPEC "-L%(sdk_root)clib2/lib"
+
 #define LINK_SPEC                                                 \
-  "%{noixemul:-fl libnix} "                                       \
+  "%{noixemul:%(link_libnix)} "                                   \
+  "%{mcrt=ixemul:%(link_ixemul)} "                                \
+  "%{mcrt=clib2:%(link_clib2)} "                                  \
   "%{fbaserel:%{!resident:-m amiga_bss -fl libb}} "               \
   "%{resident:-m amiga_bss -amiga-datadata-reloc -fl libb} "      \
   "%{fbaserel32:%{!resident32:-m amiga_bss -fl libb32}} "         \
@@ -186,7 +232,7 @@ Boston, MA 02111-1307, USA.  */
   "%{m68060:-fl libm020} "                                        \
   "%{m68020-40:-fl libm020} "                                     \
   "%{m68020-60:-fl libm020} "                                     \
-  "%{m68881:-fl libm881} "                                        \
+  "%{m68881:-fl libm881}"
 
 /* Translate '-resident' to '-fbaserel' (they differ in linking stage only).
    Don't put function addresses in registers for PC-relative code.  */
@@ -217,33 +263,55 @@ Boston, MA 02111-1307, USA.  */
               "%{!nostdlib:%{!nodefaultlibs:%G}} "                  \
               "%{T*} }}}}}} "                                       \
 
+#undef EXTRA_SPECS
+#define EXTRA_SPECS                                                 \
+  {"sdk_root", TOOLDIR_BASE_PREFIX "m68k-amigaos/"},                \
+  {"cpp_ixemul", CPP_IXEMUL_SPEC},                                  \
+  {"cpp_libnix", CPP_LIBNIX_SPEC},                                  \
+  {"cpp_clib2", CPP_CLIB2_SPEC},                                    \
+  {"lib_ixemul", LIB_IXEMUL_SPEC},                                  \
+  {"lib_libnix", LIB_LIBNIX_SPEC},                                  \
+  {"lib_clib2", LIB_CLIB2_SPEC},                                    \
+  {"link_ixemul", LINK_IXEMUL_SPEC},                                \
+  {"link_libnix", LINK_LIBNIX_SPEC},                                \
+  {"link_clib2", LINK_CLIB2_SPEC},                                  \
+  {"startfile_ixemul", STARTFILE_IXEMUL_SPEC},                      \
+  {"startfile_libnix", STARTFILE_LIBNIX_SPEC},                      \
+  {"startfile_clib2", STARTFILE_CLIB2_SPEC},                        \
+  {"endfile_ixemul", ENDFILE_IXEMUL_SPEC},                          \
+  {"endfile_libnix", ENDFILE_LIBNIX_SPEC},                          \
+  {"endfile_clib2", ENDFILE_CLIB2_SPEC},                            \
+  {"libgcc_ixemul", LIBGCC_IXEMUL_SPEC},                            \
+  {"libgcc_libnix", LIBGCC_LIBNIX_SPEC},                            \
+  {"libgcc_clib2", LIBGCC_CLIB2_SPEC}
+
 /* Compile with stack extension.  */
 
 #define MASK_STACKEXTEND 0x40000000
-#define TARGET_STACKEXTEND (((target_flags & MASK_STACKEXTEND)		\
-  && !lookup_attribute ("interrupt",					\
-			TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl))) \
-  && !lookup_attribute ("interrupt_handler",				\
-			TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl)))) \
-  || lookup_attribute ("stackext",					\
-		       TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl))))
+#define TARGET_STACKEXTEND (((target_flags & MASK_STACKEXTEND)                \
+  && !lookup_attribute ("interrupt",                                          \
+                        TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl)))  \
+  && !lookup_attribute ("interrupt_handler",                                  \
+                        TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl)))) \
+  || lookup_attribute ("stackext",                                            \
+                       TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl))))
 
 /* Compile with stack checking.  */
 
 #define MASK_STACKCHECK 0x20000000
-#define TARGET_STACKCHECK ((target_flags & MASK_STACKCHECK)		\
-  && !(target_flags & MASK_STACKEXTEND)					\
-  && !lookup_attribute ("interrupt",					\
-			TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl))) \
-  && !lookup_attribute ("interrupt_handler",				\
-			TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl))) \
-  && !lookup_attribute ("stackext",					\
-			TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl))))
+#define TARGET_STACKCHECK ((target_flags & MASK_STACKCHECK)                   \
+  && !(target_flags & MASK_STACKEXTEND)                                       \
+  && !lookup_attribute ("interrupt",                                          \
+                        TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl)))  \
+  && !lookup_attribute ("interrupt_handler",                                  \
+                        TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl)))  \
+  && !lookup_attribute ("stackext",                                           \
+                        TYPE_ATTRIBUTES (TREE_TYPE (current_function_decl))))
 
 /* Compile with a4 restoring in public functions.  */
 
 #define MASK_RESTORE_A4 0x10000000
-#define TARGET_RESTORE_A4						\
+#define TARGET_RESTORE_A4                                                     \
   ((target_flags & MASK_RESTORE_A4) && TREE_PUBLIC (current_function_decl))
 
 /* Compile with a4 restoring in all functions.  */
@@ -255,25 +323,31 @@ Boston, MA 02111-1307, USA.  */
    the assembler and '*_SPEC'.  */
 
 #undef SUBTARGET_SWITCHES
-#define SUBTARGET_SWITCHES						\
-    { "small-code", 0},							\
-    { "stackcheck", MASK_STACKCHECK},					\
-    { "no-stackcheck", - MASK_STACKCHECK},				\
-    { "stackextend", MASK_STACKEXTEND},					\
-    { "no-stackextend", - MASK_STACKEXTEND},				\
-    { "fixedstack", - (MASK_STACKCHECK|MASK_STACKEXTEND)},		\
-    { "restore-a4", MASK_RESTORE_A4},					\
-    { "no-restore-a4", - MASK_RESTORE_A4},				\
-    { "always-restore-a4", MASK_ALWAYS_RESTORE_A4},			\
+#define SUBTARGET_SWITCHES                                    \
+    { "small-code", 0},                                       \
+    { "stackcheck", MASK_STACKCHECK},                         \
+    { "no-stackcheck", - MASK_STACKCHECK},                    \
+    { "stackextend", MASK_STACKEXTEND},                       \
+    { "no-stackextend", - MASK_STACKEXTEND},                  \
+    { "fixedstack", - (MASK_STACKCHECK|MASK_STACKEXTEND)},    \
+    { "restore-a4", MASK_RESTORE_A4},                         \
+    { "no-restore-a4", - MASK_RESTORE_A4},                    \
+    { "always-restore-a4", MASK_ALWAYS_RESTORE_A4},           \
     { "no-always-restore-a4", - MASK_ALWAYS_RESTORE_A4},
 
+extern char *amigaos_crt_string;
+
+#undef SUBTARGET_OPTIONS
+#define SUBTARGET_OPTIONS							                        \
+    { "crt=", &amigaos_crt_string },
+
 #undef SUBTARGET_OVERRIDE_OPTIONS
-#define SUBTARGET_OVERRIDE_OPTIONS					\
-do									\
-  {									\
-    if (!TARGET_68020 && flag_pic==4)					\
-      error ("-fbaserel32 is not supported on the 68000 or 68010\n");	\
-  }									\
+#define SUBTARGET_OVERRIDE_OPTIONS                                     \
+do                                                                     \
+  {                                                                    \
+    if (!TARGET_68020 && flag_pic==4)                                  \
+      error ("-fbaserel32 is not supported on the 68000 or 68010\n");  \
+  }                                                                    \
 while (0)
 
 /* Various ABI issues.  */
