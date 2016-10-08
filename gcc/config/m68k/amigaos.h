@@ -77,6 +77,7 @@ Boston, MA 02111-1307, USA.  */
   "%{m68040:-D__mc68040__ -D__mc68040} "            \
   "%{m68060:-D__mc68060__ -D__mc68060} "            \
   "%{noixemul:%(cpp_libnix)} "                      \
+  "%{mcrt=nix*:%(cpp_libnix)} "                     \
   "%{mcrt=ixemul:%(cpp_ixemul)} "                   \
   "%{mcrt=clib2:%(cpp_clib2)}"
 
@@ -159,6 +160,7 @@ Boston, MA 02111-1307, USA.  */
         "%{!fbaserel:ncrt0.o%s}}}}"
 #define STARTFILE_SPEC                                            \
   "%{noixemul:%(startfile_libnix)} "                              \
+  "%{mcrt=nix*:%(startfile_libnix)} "                             \
   "%{mcrt=ixemul:%(startfile_ixemul)} "                           \
   "%{mcrt=clib2:%(startfile_clib2)}"
 
@@ -167,6 +169,7 @@ Boston, MA 02111-1307, USA.  */
 #define ENDFILE_CLIB2_SPEC ""
 #define ENDFILE_SPEC                                              \
   "%{noixemul:%(endfile_libnix)} "                                \
+  "%{mcrt=nix*:%(endfile_libnix)} "                               \
   "%{mcrt=ixemul:%(endfile_ixemul)} "                             \
   "%{mcrt=clib2:%(endfile_clib2)}"
 
@@ -187,7 +190,10 @@ Boston, MA 02111-1307, USA.  */
   "%{!p:%{!pg:-lc -lamiga -lc}} "                                 \
   "%{p:-lc_p} %{pg:-lc_p}"
 #define LIB_LIBNIX_SPEC                                           \
-  "-lnixmain -lnix -lamiga "                                      \
+  "-lnixmain -lnix "                                              \
+  "%{mcrt=*:-l%*} "                                               \
+  "%{!mcrt=*:-lnix20} "                                           \
+  "-lamiga "                                                      \
   "%{mstackcheck:-lstack} "                                       \
   "%{mstackextend:-lstack}"
 #define LIB_CLIB2_SPEC                                            \
@@ -196,14 +202,18 @@ Boston, MA 02111-1307, USA.  */
   "%{mstackextend:-lstack}"
 #define LIB_SPEC                                                  \
   "%{noixemul:%(lib_libnix)} "                                    \
+  "%{mcrt=nix*:%(lib_libnix)} "                                   \
   "%{mcrt=ixemul:%(lib_ixemul)} "                                 \
   "%{mcrt=clib2:%(lib_clib2)}"
 
 #define LIBGCC_IXEMUL_SPEC ""
-#define LIBGCC_LIBNIX_SPEC "-lnix"
+#define LIBGCC_LIBNIX_SPEC "-lnix "                               \
+  "%{mcrt=*:-l%*} "                                               \
+  "%{!mcrt=*:-lnix20}"
 #define LIBGCC_CLIB2_SPEC "-lc"
 #define LIBGCC_SPEC "-lgcc "                                      \
   "%{noixemul:%(libgcc_libnix)} "                                 \
+  "%{mcrt=nix*:%(libgcc_libnix)} "                                \
   "%{mcrt=ixemul:%(libgcc_ixemul)} "                              \
   "%{mcrt=clib2:%(libgcc_clib2)}"
 
@@ -218,6 +228,7 @@ Boston, MA 02111-1307, USA.  */
 
 #define LINK_SPEC                                                 \
   "%{noixemul:%(link_libnix)} "                                   \
+  "%{mcrt=nix*:%(link_libnix)} "                                  \
   "%{mcrt=ixemul:%(link_ixemul)} "                                \
   "%{mcrt=clib2:%(link_clib2)} "                                  \
   "%{fbaserel:%{!resident:-m amiga_bss -fl libb}} "               \
