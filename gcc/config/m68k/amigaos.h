@@ -27,7 +27,7 @@ Boston, MA 02111-1307, USA.  */
   {                                                         \
     { GPLUSPLUS_INCLUDE_DIR, "G++", 1, 1 },                 \
     { GCC_INCLUDE_DIR, "GCC", 0, 0 },                       \
-    { LOCAL_INCLUDE_DIR "/../os-include", "GCC", 0, 0 },    \
+    { TOOL_INCLUDE_DIR "/../ndk/include", "GCC", 0, 0 },    \
     { CROSS_INCLUDE_DIR, "GCC", 0, 0, 0 },                  \
     { 0, 0, 0, 0 }                                          \
   }
