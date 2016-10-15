@@ -253,10 +253,10 @@ Boston, MA 02111-1307, USA.  */
   "%{resident32:-fbaserel32} "            \
   "%{msmall-code:-fno-function-cse} "
 
-/* A modified copy of LINK_COMMAND_SPEC from gcc/gcc.c file.  If -noixemul
- * option is enabled, don't prepend libgcc.a to link libraries and make sure
- * the options is at the end of command line.  Otherwise linker chooses main()
- * function from libgcc.a instead from libnix.a. */
+/* [cahirwpz] A modified copy of LINK_COMMAND_SPEC from gcc/gcc.c file.
+   Don't prepend libgcc.a to link libraries and make sure the options is
+   at the end of command line. Otherwise linker chooses generic functions
+   from libgcc.a instead AmigaOS-specific counterparts from libnix.a. */
 
 #define LINK_COMMAND_SPEC                                           \
   "%{!fsyntax-only:"                                                \
@@ -269,7 +269,7 @@ Boston, MA 02111-1307, USA.  */
               "%{N} %{n} %{r} %{s} %{t} %{u*} %{x} %{z} %{Z} "      \
               "%{!A:%{!nostdlib:%{!nostartfiles:%S}}} "             \
               "%{static:} %{L*} %D %o "                             \
-              "%{!nostdlib:%{!nodefaultlibs:%{!noixemul:%G} %L}} "  \
+              "%{!nostdlib:%{!nodefaultlibs:%L}} "                  \
               "%{!A:%{!nostdlib:%{!nostartfiles:%E}}} "             \
               "%{!nostdlib:%{!nodefaultlibs:%G}} "                  \
               "%{T*} }}}}}} "                                       \
@@ -413,6 +413,12 @@ while (0)
 /* Support sections in chip memory, currently '.datachip' only.  */
 #define ASM_OUTPUT_SECTION_NAME(FILE, DECL, NAME, RELOC)		\
   fprintf ((FILE), "\t%s\n", (NAME))
+
+/* [cahirwpz] amiga-a.out does not have init section! However this definition
+   prevents GCC from generating code that calls _main function from libgcc.a.
+   We don't want _main, because __CTOR_LIST__ and __DTOR_LIST__ initialization
+   are handled by libnix. */
+#define HAS_INIT_SECTION
 
 /* We define ASM_OUTPUT_SECTON_NAME, but we don't support arbitrary sections,
    including '.gcc_except_table', so we emulate the standard behaviour.  */
