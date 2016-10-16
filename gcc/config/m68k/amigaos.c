@@ -36,8 +36,7 @@ Boston, MA 02111-1307, USA.  */
    This function is used in base relative code generation. */
 
 int
-read_only_operand (operand)
-     rtx operand;
+read_only_operand (rtx operand)
 {
   if (GET_CODE (operand) == CONST)
     operand = XEXP (XEXP (operand, 0), 0);
@@ -48,21 +47,12 @@ read_only_operand (operand)
 
 /* This function is used while generating a base relative code.
    It returns 1 if a decl is not relocatable, i. e., if it can be put
-   in the text section.
-   Currently, it's very primitive: it just checks if the object size
-   is less than 4 bytes (i. e., if it can hold a pointer).  It also
-   supports arrays and floating point types.  */
+   in the text section. */
 
 int
-amigaos_put_in_text (decl)
-     tree decl;
+amigaos_put_in_text (tree decl)
 {
-  tree type = TREE_TYPE (decl);
-  if (TREE_CODE (type) == ARRAY_TYPE)
-    type = TREE_TYPE (type);
-  return (TREE_INT_CST_HIGH (TYPE_SIZE (type)) == 0
-	  && TREE_INT_CST_LOW (TYPE_SIZE (type)) < 32)
-	 || FLOAT_TYPE_P (type);
+  return (TREE_READONLY(decl) || TREE_CONSTANT(decl));
 }
 
 /* Common routine used to check if a4 should be preserved/restored.  */
