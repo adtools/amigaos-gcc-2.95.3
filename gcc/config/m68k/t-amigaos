@@ -15,6 +15,10 @@ CROSS_LIBGCC1 = libgcc1.null
 
 TARGET_LIBGCC2_CFLAGS = -mfixedstack
 
+MULTILIB_OPTIONS = resident/resident32 m68000/m68020
+MULTILIB_DIRNAMES = libb libb32 . libm020
+MULTILIB_EXCEPTIONS = m68000 resident32 resident*/m68000
+
 # Support for building multiple version of libgcc.
 # Note: this is taken from the toplevel Makefile.in multilib support.
 LIBGCC = stmp-libgcc-multi
