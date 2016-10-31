@@ -3,9 +3,9 @@
 @settitle The C Preprocessor
 
 @ifinfo
-@dircategory Programming
+@dircategory Programming tools:
 @direntry
-* Cpp: (cpp).		       The GNU C preprocessor.
+* Cpp: (cpp).				The GNU C preprocessor
 @end direntry
 @end ifinfo
 
