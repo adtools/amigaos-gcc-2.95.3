@@ -1024,7 +1024,8 @@ static void print_help PROTO((void));
    retrying if necessary.  If MAX_READ_LEN is defined, read at most
    that bytes at a time.  Return a negative value if an error occurs,
    otherwise return the actual number of bytes read,
-   which must be LEN unless end-of-file was reached.  */
+   which may be < LEN if CRs have been skipped, though we try not to do
+   that.  */
 
 static int
 safe_read (desc, ptr, len)
@@ -1033,6 +1034,7 @@ safe_read (desc, ptr, len)
      int len;
 {
   int left, rcount, nchars;
+  char *rptr;
 
   left = len;
   while (left > 0) {
@@ -1052,8 +1054,20 @@ safe_read (desc, ptr, len)
       }
     if (nchars == 0)
       break;
-    ptr += nchars;
+
+    /* CRLF pairs, found with Unix when processing DOS files,
+       throw off backslash-newline removal.
+       Therefore, CRs are thrown away here. */
     left -= nchars;
+    rptr = ptr;
+    while(nchars--)
+      {
+	if(*rptr == '\r' && *(rptr+1) == '\n')
+	  left++;
+	else
+	  *ptr++ = *rptr;
+	rptr++;
+      }
   }
   return len - left;
 }
@@ -2086,8 +2100,8 @@ main (argc, argv)
     for (;;) {
       cnt = safe_read (f, (char *) fp->buf + size, bsize - size);
       if (cnt < 0) goto perror;	/* error! */
+      if (cnt == 0) break; /* End of file */
       size += cnt;
-      if (size != bsize) break;	/* End of file */
       bsize *= 2;
       fp->buf = (U_CHAR *) xrealloc (fp->buf, bsize + 2);
     }
@@ -5027,6 +5041,8 @@ read_name_map (dirname)
 	  map_list_ptr->map_list_map = ptr;
 
 	  while ((ch = getc (f)) != '\n')
+	    if (ch == '\r')
+		continue;
 	    if (ch == EOF)
 	      break;
 	}
@@ -5259,9 +5275,9 @@ finclude (f, inc, op, system_header_p, dirptr)
       i = safe_read (f, (char *) fp->buf + st_size, bsize - st_size);
       if (i < 0)
 	goto nope;      /* error! */
-      st_size += i;
-      if (st_size != bsize)
+      if (i == 0)
 	break;	/* End of file */
+      st_size += i;
       bsize *= 2;
       fp->buf = (U_CHAR *) xrealloc (fp->buf, bsize + 2);
     }
