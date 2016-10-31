@@ -335,7 +335,8 @@ private:
 
 public:
   const charT* c_str () const
-    { if (length () == 0) return ""; terminate (); return data (); }
+    { const charT* null_str = ""; 
+      if (length () == 0) return null_str; terminate (); return data (); }
   void resize (size_type n, charT c);
   void resize (size_type n)
     { resize (n, eos ()); }
