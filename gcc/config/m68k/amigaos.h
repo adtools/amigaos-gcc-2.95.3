@@ -114,6 +114,7 @@ Boston, MA 02111-1307, USA.  */
   "-Damigaos "                                                    \
   "-DMCH_AMIGA "                                                  \
   "-DAMIGA "                                                      \
+  "-D__amigaos3__ "                                               \
   "-D__chip=__attribute__((__chip__)) "                           \
   "-D__saveds=__attribute__((__saveds__)) "                       \
   "-D__interrupt=__attribute__((__interrupt__)) "                 \
