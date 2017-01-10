@@ -327,8 +327,8 @@ main (argc, argv)
   printf ("/* Generated automatically by the program `genconfig'\n\
 from the machine description file `md'.  */\n\n");
 
-  /* Allow at least 15 operands for the sake of asm constructs.  */
-  max_recog_operands = 14;  /* We will add 1 later.  */
+  /* Allow at least 20 operands for the sake of asm constructs.  */
+  max_recog_operands = 19;  /* We will add 1 later.  */
   max_dup_operands = 1;
 
   /* Read the machine description.  */
