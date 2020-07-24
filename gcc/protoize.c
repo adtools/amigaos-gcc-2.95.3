@@ -69,6 +69,7 @@ Boston, MA 02111-1307, USA.  */
 #endif
 #endif
 #include <setjmp.h>
+#include <alloca.h>
 
 /* Some systems like Linux don't declare rindex if _POSIX_SOURCE is declared,
    but it normally does declare it.  This means that configure thinks we don't

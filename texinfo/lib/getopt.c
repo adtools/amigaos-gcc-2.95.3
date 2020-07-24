@@ -200,6 +200,8 @@ static char *posixly_correct;
 #include <string.h>
 #define	my_index	strchr
 #else
+size_t strlen ();
+int strcmp (), strncmp ();
 
 /* Avoid depending on library functions or files
    whose names are inconsistent.  */

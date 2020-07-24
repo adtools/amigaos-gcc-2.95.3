@@ -30,7 +30,7 @@
 #include <sys/types.h>
 
 extern void *malloc (), *realloc ();
-static void memory_error_and_abort ();
+static void abort(), memory_error_and_abort ();
 
 /* **************************************************************** */
 /*								    */

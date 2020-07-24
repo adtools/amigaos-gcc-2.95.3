@@ -2187,6 +2187,9 @@ extern void print_operand ();
 extern void notice_update_cc ();
 extern void finalize_pic ();
 extern void override_options ();
+extern void m68k_init_cumulative_args (), m68k_function_arg_advance ();
+extern struct rtx_def *m68k_function_arg ();
+extern int comp_m68k_type_attributes (), valid_m68k_type_attribute ();
 
 
 /*

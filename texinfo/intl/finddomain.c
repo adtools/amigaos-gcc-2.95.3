@@ -31,6 +31,7 @@
 # ifdef HAVE_MALLOC_H
 #  include <malloc.h>
 # else
+void *malloc ();
 void free ();
 # endif
 #endif

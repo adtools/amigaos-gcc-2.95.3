@@ -474,6 +474,7 @@ while (0)
 /* Given that symbolic_operand(X), return TRUE if no special
    base relative relocation is necessary */
 
+int read_only_operand ();
 #define LEGITIMATE_BASEREL_OPERAND_P(X)					\
   (flag_pic >= 3 && read_only_operand (X))
 
@@ -498,6 +499,7 @@ while (0)
    On the Amiga we use this to indicate if references to a symbol should be
    absolute or base relative.  */
 
+int amigaos_put_in_text ();
 #define ENCODE_SECTION_INFO(DECL)					\
 do									\
   {									\
@@ -608,6 +610,7 @@ while (0)
 /* Determine if the epilogue should be output as RTL.
    Don't do it if preserving a4.  */
 
+int amigaos_restore_a4 ();
 #undef USE_RETURN_INSN
 #define USE_RETURN_INSN (use_return_insn () && ! amigaos_restore_a4 ())
 
@@ -617,6 +620,7 @@ while (0)
    ARGS is a valid machine specific attribute for DECL.  The attributes
    in ATTRIBUTES have previously been assigned to DECL.  */
 
+int valid_amigaos_decl_attribute ();
 #define VALID_MACHINE_DECL_ATTRIBUTE(DECL, ATTRIBUTES, IDENTIFIER, ARGS) \
   (valid_amigaos_decl_attribute ((DECL), (IDENTIFIER)))
 
@@ -624,6 +628,7 @@ while (0)
    ARGS is a valid machine specific attribute for TYPE.  The attributes
    in ATTRIBUTES have previously been assigned to TYPE.  */
 
+int valid_amigaos_type_attribute ();
 #undef VALID_MACHINE_TYPE_ATTRIBUTE
 #define VALID_MACHINE_TYPE_ATTRIBUTE(TYPE, ATTRIBUTES, IDENTIFIER, ARGS) \
   (valid_amigaos_type_attribute ((TYPE), (ATTRIBUTES), (IDENTIFIER), (ARGS)))
@@ -662,6 +667,7 @@ struct amigaos_args
    for a call to a function whose data type is FNTYPE.
    For a library call, FNTYPE is 0.  */
 
+void amigaos_init_cumulative_args ();
 #undef INIT_CUMULATIVE_ARGS
 #define INIT_CUMULATIVE_ARGS(CUM,FNTYPE,LIBNAME,INDIRECT)		\
   (amigaos_init_cumulative_args(&(CUM), (FNTYPE)))
@@ -670,6 +676,7 @@ struct amigaos_args
    of mode MODE and data type TYPE.
    (TYPE is null for libcalls where that information may not be available.)  */
 
+void amigaos_function_arg_advance ();
 #undef FUNCTION_ARG_ADVANCE
 #define FUNCTION_ARG_ADVANCE(CUM, MODE, TYPE, NAMED)			\
   (amigaos_function_arg_advance (&(CUM)))
@@ -677,14 +684,16 @@ struct amigaos_args
 /* A C expression that controls whether a function argument is passed
    in a register, and which register. */
 
+struct rtx_def *amigaos_function_arg ();
 #undef FUNCTION_ARG
 #define FUNCTION_ARG(CUM, MODE, TYPE, NAMED) \
-  ((struct rtx_def *)amigaos_function_arg (&(CUM), (MODE), (TYPE)))
+  (amigaos_function_arg (&(CUM), (MODE), (TYPE)))
 
 /* A C expression whose value is zero if the attributes on TYPE1 and
    TYPE2 are incompatible, one if they are compatible, and two if they
    are nearly compatible (which causes a warning to be generated).  */
 
+int comp_amigaos_type_attributes ();
 #undef COMP_TYPE_ATTRIBUTES
 #define COMP_TYPE_ATTRIBUTES(TYPE1, TYPE2) 				\
   (comp_amigaos_type_attributes ((TYPE1), (TYPE2)))
@@ -741,6 +750,7 @@ struct rtx_def* gen_stack_cleanup_call ();
 #undef TARGET_ALTERNATE_ALLOCATE_STACK
 #define TARGET_ALTERNATE_ALLOCATE_STACK 1
 
+void amigaos_alternate_allocate_stack ();
 #define ALTERNATE_ALLOCATE_STACK(OPERANDS)				\
 do									\
   {									\

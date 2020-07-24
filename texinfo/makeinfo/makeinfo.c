@@ -50,6 +50,10 @@ char *alloca ();
 # endif
 #endif
 
+void *malloc ();
+void free (), qsort (), abort (), exit ();
+int atoi ();
+
 /* We'd like to take advantage of _doprnt if it's around, a la error.c,
    but then we'd have no VA_SPRINTF.  */
 #if HAVE_VPRINTF
@@ -433,6 +437,10 @@ void normalize_node_name ();
 void undefindex (), top_defindex (), gen_defindex ();
 void define_user_command ();
 void free_pending_notes (), output_pending_notes ();
+
+int validate (), search_forward (), set_paragraph_indent (), self_delimiting (),
+    set_footnote_style ();
+void end_multitable (), multitable_item ();
 
 char **get_brace_args ();
 char *expansion ();

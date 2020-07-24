@@ -22,6 +22,8 @@
 
 #if defined STDC_HEADERS || defined _LIBC
 # include <stdlib.h>
+#else
+void free ();
 #endif
 
 #if defined STDC_HEADERS || defined HAVE_STRING_H || defined _LIBC

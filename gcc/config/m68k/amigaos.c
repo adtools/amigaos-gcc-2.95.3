@@ -27,6 +27,8 @@ Boston, MA 02111-1307, USA.  */
 #include "tree.h"
 #include "flags.h"
 #include "expr.h"
+
+extern void error (), error_with_decl ();
 
 /* Baserel support.  */
 
@@ -367,7 +369,7 @@ amigaos_function_arg(CUMULATIVE_ARGS *cum, enum machine_mode mode,
       return gen_rtx(REG, mode, cum->last_arg_reg);
     }
   else
-    return (struct rtx_def *)m68k_function_arg(cum, mode, type);
+    return m68k_function_arg(cum, mode, type);
 }
 
 /* Return zero if the attributes on TYPE1 and TYPE2 are incompatible,

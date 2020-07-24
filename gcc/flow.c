@@ -273,6 +273,8 @@ static rtx label_value_list;
 #define SET_INSN_VOLATILE(INSN) bitmap_set_bit (uid_volatile, INSN_UID (INSN))
 static bitmap uid_volatile;
 
+int function_arg_regno_p ();
+
 /* Forward declarations */
 static int count_basic_blocks		PROTO((rtx));
 static rtx find_basic_blocks_1		PROTO((rtx, rtx*));

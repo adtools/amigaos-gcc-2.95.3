@@ -25,6 +25,9 @@
 
 #if defined STDC_HEADERS || defined _LIBC
 # include <stdlib.h>
+#else
+void *malloc ();
+void free ();
 #endif
 
 #if defined HAVE_UNISTD_H || defined _LIBC

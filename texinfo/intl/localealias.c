@@ -44,10 +44,13 @@ char *alloca ();
 #if defined STDC_HEADERS || defined _LIBC
 # include <stdlib.h>
 #else
+void *bsearch ();
 char *getenv ();
+void qsort ();
 # ifdef HAVE_MALLOC_H
 #  include <malloc.h>
 # else
+void *malloc ();
 void free ();
 # endif
 #endif

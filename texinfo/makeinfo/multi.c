@@ -22,6 +22,13 @@
 
 #define MAXCOLS 100             /* remove this limit later @@ */
 
+void inhibit_output_flushing (), uninhibit_output_flushing (), insert (),
+     close_paragraph (), line_error (), init_paragraph (), error (),
+     cm_noindent (), exit (), warning (), flush_output ();
+
+int setup_output_environment (), select_output_environment (),
+    setup_multitable_parameters ();
+
 
 /*
  * Output environments.  This is a hack grafted onto existing
