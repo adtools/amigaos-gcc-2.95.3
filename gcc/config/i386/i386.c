@@ -291,7 +291,7 @@ override_options ()
 
   if (ix86_arch_string == 0)
     {
-      ix86_arch_string = PROCESSOR_PENTIUM_STRING;
+      ix86_arch_string = PROCESSOR_DEFAULT_STRING;
       if (ix86_cpu_string == 0)
 	ix86_cpu_string = PROCESSOR_DEFAULT_STRING;
     }
@@ -308,7 +308,7 @@ override_options ()
   if (i == ptt_size)
     {
       error ("bad value (%s) for -march= switch", ix86_arch_string);
-      ix86_arch_string = PROCESSOR_PENTIUM_STRING;
+      ix86_arch_string = PROCESSOR_DEFAULT_STRING;
       ix86_arch = PROCESSOR_DEFAULT;
     }
 

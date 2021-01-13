@@ -80,9 +80,9 @@
 @c @end tex
 
 @ifinfo
-@dircategory Programming
+@dircategory Programming tools:
 @direntry
-* gcc: (gcc).                  The GNU Compiler Collection.
+* gcc: (gcc).				The GNU Compiler Collection
 @end direntry
 @ifset INTERNALS
 @ifset USING
