@@ -1365,7 +1365,7 @@ cpp_handle_option (pfile, argc, argv)
 	    opts->c9x = 0, opts->objc = 0;
 	if (! strcmp (argv[i], "-lang-c++"))
 	  opts->cplusplus = 1, opts->cplusplus_comments = 1, opts->c89 = 0,
-	    opts->c9x = 0, opts->objc = 0;
+	    opts->c9x = 1, opts->objc = 0;
 	if (! strcmp (argv[i], "-lang-objc"))
 	  opts->cplusplus = 0, opts->cplusplus_comments = 1, opts->c89 = 0,
 	    opts->c9x = 0, opts->objc = 1;
