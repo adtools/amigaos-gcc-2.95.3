@@ -38,7 +38,7 @@
 // The allocation primitives are intended to allocate individual objects,
 // not larger arenas as with the original STL allocators.
 
-#if 0
+#ifdef __STL_USE_EXCEPTIONS
 #   include <new>
 #   define __THROW_BAD_ALLOC throw bad_alloc()
 #elif !defined(__THROW_BAD_ALLOC)

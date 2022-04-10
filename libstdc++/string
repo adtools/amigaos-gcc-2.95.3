@@ -7,7 +7,9 @@
 
 extern "C++" {
 typedef basic_string <char> string;
-// typedef basic_string <wchar_t> wstring;
+#ifdef __ENABLE_WSTRING
+typedef basic_string <wchar_t> wstring;
+#endif
 } // extern "C++"
 
 #endif
